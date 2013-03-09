@@ -43,7 +43,7 @@ $wgExtensionCredits['other'][] = array(
  * Gets nice HTML text for user containing link to user
  * and also links to user site, groups editing, talk and contribs pages.
  */
-function getUserText(User $user)
+function getUserText($user)
 {
 	global $wgWikiUrl, $wgWikiUrlEnding, $wgWikiUrlEndingUserPage,
 		   $wgWikiUrlEndingBlockUser, $wgWikiUrlEndingUserRights, 
@@ -86,6 +86,9 @@ function article_saved(WikiPage $article, $user, $text, $summary, $isminor, $isw
  */
 function article_inserted(WikiPage $article, $user, $text, $summary, $isminor, $iswatch, $section, $flags, $revision)
 {
+        // Do not announce newly added file uploads as articles...
+        if ($article->getTitle()->getNsText() == "File") return true;
+        
 	global $wgWikiUrl, $wgWikiUrlEnding;
 	$message = sprintf(
 		"%s has created the <a href=\"%s\">%s</a> article (summary: %s)",
@@ -133,15 +136,18 @@ function new_user_account($user, $byEmail)
  * Called when a file upload has completed.
  * @see http://www.mediawiki.org/wiki/Manual:Hooks/UploadComplete
  */
-function file_uploaded(SpecialUpload $image)
+function file_uploaded($image)
 {
+        global $wgWikiUrl, $wgWikiUrlEnding;
+        
 	$message = sprintf(
-		"%s has uploaded file <a href=\"%s\">%s</a> (format: %s, size: %s MB)",
+		"%s has uploaded file <a href=\"%s\">%s</a> (format: %s, size: %s MB, summary: %s)",
 		getUserText($image->getLocalFile()->user_text),
-		$image->getLocalFile()->url,
+		$wgWikiUrl . $wgWikiUrlEnding . $image->getLocalFile()->getTitle(),
 		$image->getLocalFile()->getTitle(),
 		$image->getLocalFile()->mime,
-		$image->getLocalFile()->size / 1024 / 1024);
+		round($image->getLocalFile()->size / 1024 / 1024, 3),
+                $image->getLocalFile()->description);
 	push_hipchat_notify($message);
 	return true;
 }

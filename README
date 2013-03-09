@@ -1,5 +1,11 @@
 This is a extension for MediaWiki that sends notifications into HipChat channel.
 
+###########
+# License #
+###########
+
+MIT (http://en.wikipedia.org/wiki/MIT_License)
+
 ########################################################
 # Supported MediaWiki operations to send notifications #
 ########################################################

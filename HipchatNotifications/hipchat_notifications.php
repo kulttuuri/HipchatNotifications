@@ -43,7 +43,7 @@ $wgExtensionCredits['other'][] = array(
  * Gets nice HTML text for user containing link to user
  * and also links to user site, groups editing, talk and contribs pages.
  */
-function getUserText($user)
+function getUserText(User $user)
 {
 	global $wgWikiUrl, $wgWikiUrlEnding, $wgWikiUrlEndingUserPage,
 		   $wgWikiUrlEndingBlockUser, $wgWikiUrlEndingUserRights, 
@@ -63,14 +63,18 @@ function getUserText($user)
  * Occurs after the save page request has been processed.
  * @see https://www.mediawiki.org/wiki/Manual:Hooks/PageContentSaveComplete
  */
-function article_saved($article, $user, $text, $summary, $isminor, $iswatch, $section)
+function article_saved(WikiPage $article, $user, $text, $summary, $isminor, $iswatch, $section)
 {
-	global $wgWikiUrl, $wgWikiUrlEnding;
+        // Skip new articles that have view count below 1 (his is already handled in article_added function)
+        if ($article->getCount() == null || $article->getCount() < 1) return true;
+	
+        global $wgWikiUrl, $wgWikiUrlEnding;
+        $articleCategories = $article->getHiddenCategories();
 	$message = sprintf(
 		"%s has edited the <a href=\"%s\">%s</a> article (summary: %s)",
-		getUserText($user->mName),
-		$wgWikiUrl . $wgWikiUrlEnding . $article->mTitle->mTextform,
-		$article->mTitle->mTextform,
+		getUserText($user),
+		$wgWikiUrl . $wgWikiUrlEnding . $article->getTitle()->getFullText(),
+                $article->getTitle()->getFullText(),
 		$summary);
 	push_hipchat_notify($message);
 	return true;
@@ -80,14 +84,14 @@ function article_saved($article, $user, $text, $summary, $isminor, $iswatch, $se
  * Occurs after a new article has been created.
  * @see http://www.mediawiki.org/wiki/Manual:Hooks/ArticleInsertComplete
  */
-function article_inserted($article, $user, $text, $summary, $isminor, $iswatch, $section, $flags, $revision)
+function article_inserted(WikiPage $article, $user, $text, $summary, $isminor, $iswatch, $section, $flags, $revision)
 {
 	global $wgWikiUrl, $wgWikiUrlEnding;
 	$message = sprintf(
 		"%s has created the <a href=\"%s\">%s</a> article (summary: %s)",
-		getUserText($user->mName),
-		$wgWikiUrl . $wgWikiUrlEnding . $article->mTitle->mTextform,
-		$article->mTitle->mTextform,
+		getUserText($user),
+		$wgWikiUrl . $wgWikiUrlEnding . $article->getTitle()->getFullText(),
+		$article->getTitle()->getFullText(),
 		$summary);
 	push_hipchat_notify($message);
 	return true;
@@ -97,14 +101,14 @@ function article_inserted($article, $user, $text, $summary, $isminor, $iswatch, 
  * Occurs after the delete article request has been processed.
  * @see http://www.mediawiki.org/wiki/Manual:Hooks/ArticleDeleteComplete
  */
-function article_deleted($article, $user, $reason, $id)
+function article_deleted(WikiPage $article, $user, $reason, $id)
 {
 	global $wgWikiUrl, $wgWikiUrlEnding;
 	$message = sprintf(
 		"%s has deleted the <a href=\"%s\">%s</a> article (reason: %s)",
-		getUserText($user->mName),
-		$wgWikiUrl . $wgWikiUrlEnding . $article->mTitle->mTextform,
-		$article->mTitle->mTextform,
+		getUserText($user),
+		$wgWikiUrl . $wgWikiUrlEnding . $article->getTitle()->getFullText(),
+		$article->getTitle()->getFullText(),
 		$reason);
 	push_hipchat_notify($message);
 	return true;
@@ -118,7 +122,7 @@ function new_user_account($user, $byEmail)
 {
 	$message = sprintf(
 		"New user account %s was just created (email: %s, real name: %s)",
-		getUserText($user->mName),
+		getUserText($user),
 		$user->getEmail(),
 		$user->getRealName());
 	push_hipchat_notify($message);
@@ -129,7 +133,7 @@ function new_user_account($user, $byEmail)
  * Called when a file upload has completed.
  * @see http://www.mediawiki.org/wiki/Manual:Hooks/UploadComplete
  */
-function file_uploaded($image)
+function file_uploaded(SpecialUpload $image)
 {
 	$message = sprintf(
 		"%s has uploaded file <a href=\"%s\">%s</a> (format: %s, size: %s MB)",
@@ -146,7 +150,7 @@ function file_uploaded($image)
  * Occurs after the request to block an IP or user has been processed
  * @see http://www.mediawiki.org/wiki/Manual:MediaWiki_hooks/BlockIpComplete
  */
-function user_blocked($block, $user)
+function user_blocked(Block $block, $user)
 {
 	global $wgWikiUrl, $wgWikiUrlEnding, $wgWikiUrlEndingBlockList;
 	$message = sprintf(
@@ -154,10 +158,18 @@ function user_blocked($block, $user)
 		$user,
 		$block->getTarget(),
 		$block->mReason,
-		$block->mExpiry,
+		$block->getExpiry(),
 		"<a href='".$wgWikiUrl.$wgWikiUrlEnding.$wgWikiUrlEndingBlockList."'>block list</a>");
 	push_hipchat_notify($message);
 	return true;
+}
+
+/**
+ * Writes debug message into file. 
+ */
+function writeDebug($message)
+{
+    wfErrorLog($message + "\n", "hipchatdebug.txt");
 }
 
 /**
@@ -184,6 +196,10 @@ function push_hipchat_notify($message)
 	$h = curl_init();
 	curl_setopt($h, CURLOPT_URL, $url);
 	curl_setopt($h, CURLOPT_RETURNTRANSFER, true);
+        // I know this shouldn't be done, but because it wouldn't otherwise work because of SSL...
+        curl_setopt ($h, CURLOPT_SSL_VERIFYHOST, 0);
+        curl_setopt ($h, CURLOPT_SSL_VERIFYPEER, 0);
+        // ... Aaand execute the curl script!
 	curl_exec($h);
 	curl_close($h);
 }

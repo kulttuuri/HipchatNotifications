@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 /**#@+
  * This extension integrates Hipchat with MediaWiki. Sends HipChat notifications
  * for selected actions that have occurred in your MediaWiki sites.
@@ -8,7 +8,7 @@
  * @ingroup Extensions
  * @link https://github.com/kulttuuri/hipchat_mediawiki
  * @author Aleksi Postari / kulttuuri <riialin@gmail.com>
- * @copyright Copyright � 2013, Aleksi Postari
+ * @copyright Copyright © 2013, Aleksi Postari
  * @license http://en.wikipedia.org/wiki/MIT_License MIT
  */
 

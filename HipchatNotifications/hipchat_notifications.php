@@ -9,7 +9,7 @@
  * @link https://github.com/kulttuuri/hipchat_mediawiki
  * @author Aleksi Postari / kulttuuri <riialin@gmail.com>
  * @copyright Copyright © 2013, Aleksi Postari
- * @license http://www.gnu.org/copyleft/gpl.html GNU General Public License 2.0 or later
+ * @license http://en.wikipedia.org/wiki/MIT_License MIT
  */
 
 if (!defined('MEDIAWIKI')) die();
@@ -18,7 +18,7 @@ $hpc_attached = true;
 require_once("hipchat_default_config.php");
 
 if ($wgHipchatNotificationEditedArticle)
-	$wgHooks['ArticleSaveComplete'][] = array('article_saved');		// When article has been saved
+	$wgHooks['ArticleSaveComplete'][] = array('article_saved');			// When article has been saved
 if ($wgHipchatNotificationAddedArticle)
 	$wgHooks['ArticleInsertComplete'][] = array('article_inserted');	// When new article has been inserted
 if ($wgHipchatNotificationRemovedArticle)

@@ -18,17 +18,17 @@ $hpc_attached = true;
 require_once("hipchat_default_config.php");
 
 if ($wgHipchatNotificationEditedArticle)
-	$wgHooks['ArticleSaveComplete'][] = array('article_saved');			// When article has been saved
+	$wgHooks['ArticleSaveComplete'][] = array('article_saved');		// When article has been saved
 if ($wgHipchatNotificationAddedArticle)
 	$wgHooks['ArticleInsertComplete'][] = array('article_inserted');	// When new article has been inserted
 if ($wgHipchatNotificationRemovedArticle)
 	$wgHooks['ArticleDeleteComplete'][] = array('article_deleted');		// When article has been removed
 if ($wgHipchatNotificationNewUser)
-	$wgHooks['AddNewAccount'][] = array('new_user_account');			// When new user account is created
+	$wgHooks['AddNewAccount'][] = array('new_user_account');		// When new user account is created
 if ($wgHipchatNotificationBlockedUser)
-	$wgHooks['BlockIpComplete'][] = array('user_blocked');				// When user or IP has been blocked
+	$wgHooks['BlockIpComplete'][] = array('user_blocked');			// When user or IP has been blocked
 if ($wgHipchatNotificationFileUpload)
-	$wgHooks['UploadComplete'][] = array('file_uploaded');				// When file has been uploaded
+	$wgHooks['UploadComplete'][] = array('file_uploaded');			// When file has been uploaded
 
 $wgExtensionCredits['other'][] = array(
 	'path' => __FILE__,
@@ -40,14 +40,14 @@ $wgExtensionCredits['other'][] = array(
 );
 
 /**
- * Gets nice HTML text for user containing link to user
+ * Gets nice HTML text for user containing the link to user page
  * and also links to user site, groups editing, talk and contribs pages.
  */
 function getUserText($user)
 {
 	global $wgWikiUrl, $wgWikiUrlEnding, $wgWikiUrlEndingUserPage,
-		   $wgWikiUrlEndingBlockUser, $wgWikiUrlEndingUserRights, 
-		   $wgWikiUrlEndingUserTalkPage, $wgWikiUrlEndingUserContributions;
+               $wgWikiUrlEndingBlockUser, $wgWikiUrlEndingUserRights, 
+	       $wgWikiUrlEndingUserTalkPage, $wgWikiUrlEndingUserContributions;
 	
 	return sprintf(
 		"<b>%s</b> (%s | %s | %s | %s)",
@@ -60,22 +60,41 @@ function getUserText($user)
 }
 
 /**
+ * Gets nice HTML text for article containing the link to article page
+ * and also into edit, delete and article history pages.
+ */
+function getArticleText(WikiPage $article)
+{
+        global $wgWikiUrl, $wgWikiUrlEnding, $wgWikiUrlEndingEditArticle,
+               $wgWikiUrlEndingDeleteArticle, $wgWikiUrlEndingHistory;
+
+        return sprintf(
+                "<b>%s</b> (%s | %s | %s)",
+                "<a href='".$wgWikiUrl.$wgWikiUrlEnding.$article->getTitle()->getFullText()."'>".$article->getTitle()->getFullText()."</a>",
+                "<a href='".$wgWikiUrl.$wgWikiUrlEnding.$article->getTitle()->getFullText()."&".$wgWikiUrlEndingEditArticle."'>edit</a>",
+                "<a href='".$wgWikiUrl.$wgWikiUrlEnding.$article->getTitle()->getFullText()."&".$wgWikiUrlEndingDeleteArticle."'>delete</a>",
+                "<a href='".$wgWikiUrl.$wgWikiUrlEnding.$article->getTitle()->getFullText()."&".$wgWikiUrlEndingHistory."'>history</a>"/*,
+                "move",
+                "protect",
+                "watch"*/
+                );
+}
+
+/**
  * Occurs after the save page request has been processed.
  * @see https://www.mediawiki.org/wiki/Manual:Hooks/PageContentSaveComplete
  */
-function article_saved(WikiPage $article, $user, $text, $summary, $isminor, $iswatch, $section)
+function article_saved(WikiPage $article, $user, $content, $summary, $isMinor, $isWatch, $section, $flags, $revision, $status, $baseRevId)
 {
-        // Skip new articles that have view count below 1 (his is already handled in article_added function)
+        // Skip new articles that have view count below 1 (this is already handled in article_added function)
         if ($article->getCount() == null || $article->getCount() < 1) return true;
 	
-        global $wgWikiUrl, $wgWikiUrlEnding;
-        $articleCategories = $article->getHiddenCategories();
 	$message = sprintf(
-		"%s has edited the <a href=\"%s\">%s</a> article (summary: %s)",
+		"%s has %s article %s %s",
 		getUserText($user),
-		$wgWikiUrl . $wgWikiUrlEnding . $article->getTitle()->getFullText(),
-                $article->getTitle()->getFullText(),
-		$summary);
+                $isminor == true ? "made minor edit to" : "edited",
+                getArticleText($article),
+		$summary == "" ? "" : "Summary: $summary");
 	push_hipchat_notify($message);
 	return true;
 }
@@ -89,13 +108,11 @@ function article_inserted(WikiPage $article, $user, $text, $summary, $isminor, $
         // Do not announce newly added file uploads as articles...
         if ($article->getTitle()->getNsText() == "File") return true;
         
-	global $wgWikiUrl, $wgWikiUrlEnding;
 	$message = sprintf(
-		"%s has created the <a href=\"%s\">%s</a> article (summary: %s)",
+		"%s has created article %s %s",
 		getUserText($user),
-		$wgWikiUrl . $wgWikiUrlEnding . $article->getTitle()->getFullText(),
-		$article->getTitle()->getFullText(),
-		$summary);
+		getArticleText($article),
+		$summary == "" ? "" : "Summary: $summary");
 	push_hipchat_notify($message);
 	return true;
 }
@@ -106,12 +123,10 @@ function article_inserted(WikiPage $article, $user, $text, $summary, $isminor, $
  */
 function article_deleted(WikiPage $article, $user, $reason, $id)
 {
-	global $wgWikiUrl, $wgWikiUrlEnding;
 	$message = sprintf(
-		"%s has deleted the <a href=\"%s\">%s</a> article (reason: %s)",
+		"%s has deleted article %s Reason: %s",
 		getUserText($user),
-		$wgWikiUrl . $wgWikiUrlEnding . $article->getTitle()->getFullText(),
-		$article->getTitle()->getFullText(),
+		getArticleText($article),
 		$reason);
 	push_hipchat_notify($message);
 	return true;
@@ -160,12 +175,12 @@ function user_blocked(Block $block, $user)
 {
 	global $wgWikiUrl, $wgWikiUrlEnding, $wgWikiUrlEndingBlockList;
 	$message = sprintf(
-		"%s has blocked %s (reason: %s, expiry: %s) %s",
-		$user,
-		$block->getTarget(),
-		$block->mReason,
+		"%s has blocked %s %s Block expiration: %s. %s",
+		getUserText($user),
+                getUserText($block->getTarget()),
+		$block->mReason == "" ? "" : "with reason '".$block->mReason."'.",
 		$block->getExpiry(),
-		"<a href='".$wgWikiUrl.$wgWikiUrlEnding.$wgWikiUrlEndingBlockList."'>block list</a>");
+		"<a href='".$wgWikiUrl.$wgWikiUrlEnding.$wgWikiUrlEndingBlockList."'>List of all blocks</a>.");
 	push_hipchat_notify($message);
 	return true;
 }

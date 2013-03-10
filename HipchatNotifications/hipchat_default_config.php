@@ -54,12 +54,15 @@ if (!isset($hpc_attached)) die();
 	
 	// OPTIONAL
 	
-	$wgWikiUrlEndingUserRights = "Special%3AUserRights&user=";
-	$wgWikiUrlEndingBlockUser = "Special:Block/";
-	$wgWikiUrlEndingUserPage = "User:";
-	$wgWikiUrlEndingUserTalkPage = "User_talk:";
-	$wgWikiUrlEndingUserContributions = "Special:Contributions/";
-	$wgWikiUrlEndingBlockList = "Special:BlockList";
+	$wgWikiUrlEndingUserRights          = "Special%3AUserRights&user=";
+	$wgWikiUrlEndingBlockUser           = "Special:Block/";
+	$wgWikiUrlEndingUserPage            = "User:";
+	$wgWikiUrlEndingUserTalkPage        = "User_talk:";
+	$wgWikiUrlEndingUserContributions   = "Special:Contributions/";
+	$wgWikiUrlEndingBlockList           = "Special:BlockList";
+        $wgWikiUrlEndingEditArticle         = "action=edit";
+        $wgWikiUrlEndingDeleteArticle       = "action=delete";
+        $wgWikiUrlEndingHistory             = "action=history";
 
 #####################
 # MEDIAWIKI ACTIONS #

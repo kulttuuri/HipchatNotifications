@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 /**#@+
  * This extension integrates Hipchat with MediaWiki. Sends HipChat notifications
  * for selected actions that have occurred in your MediaWiki sites.

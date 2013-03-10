@@ -76,9 +76,12 @@ MIT (http://en.wikipedia.org/wiki/MIT_License)
 	
 // Url endings
 
-	$wgWikiUrlEndingUserRights = "Special%3AUserRights&user=";
-	$wgWikiUrlEndingBlockUser = "Special:Block/";
-	$wgWikiUrlEndingUserPage = "User:";
-	$wgWikiUrlEndingUserTalkPage = "User_talk:";
-	$wgWikiUrlEndingUserContributions = "Special:Contributions/";
-	$wgWikiUrlEndingBlockList = "Special:BlockList";
+	$wgWikiUrlEndingUserRights          = "Special%3AUserRights&user=";
+	$wgWikiUrlEndingBlockUser           = "Special:Block/";
+	$wgWikiUrlEndingUserPage            = "User:";
+	$wgWikiUrlEndingUserTalkPage        = "User_talk:";
+	$wgWikiUrlEndingUserContributions   = "Special:Contributions/";
+	$wgWikiUrlEndingBlockList           = "Special:BlockList";
+	$wgWikiUrlEndingEditArticle         = "action=edit";
+	$wgWikiUrlEndingDeleteArticle       = "action=delete";
+	$wgWikiUrlEndingHistory             = "action=history";

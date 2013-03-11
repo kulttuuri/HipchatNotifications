@@ -179,7 +179,7 @@ function user_blocked(Block $block, $user)
 		getUserText($user),
                 getUserText($block->getTarget()),
 		$block->mReason == "" ? "" : "with reason '".$block->mReason."'.",
-		$block->getExpiry(),
+		$block->mExpiry,
 		"<a href='".$wgWikiUrl.$wgWikiUrlEnding.$wgWikiUrlEndingBlockList."'>List of all blocks</a>.");
 	push_hipchat_notify($message);
 	return true;

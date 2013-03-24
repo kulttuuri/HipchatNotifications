@@ -36,7 +36,7 @@ $wgExtensionCredits['other'][] = array(
 	'author' => 'Aleksi Postari',
 	'description' => 'Sends HipChat notifications for selected actions that have occurred in your MediaWiki sites.',
 	'url' => 'https://github.com/kulttuuri/hipchat_mediawiki',
-	"version" => "1.01"
+	"version" => "1.02"
 );
 
 /**
@@ -95,7 +95,7 @@ function article_saved(WikiPage $article, $user, $content, $summary, $isMinor, $
                 $isminor == true ? "made minor edit to" : "edited",
                 getArticleText($article),
 		$summary == "" ? "" : "Summary: $summary");
-	push_hipchat_notify($message);
+	push_hipchat_notify($message, "yellow");
 	return true;
 }
 
@@ -113,7 +113,7 @@ function article_inserted(WikiPage $article, $user, $text, $summary, $isminor, $
 		getUserText($user),
 		getArticleText($article),
 		$summary == "" ? "" : "Summary: $summary");
-	push_hipchat_notify($message);
+	push_hipchat_notify($message, "green");
 	return true;
 }
 
@@ -128,7 +128,7 @@ function article_deleted(WikiPage $article, $user, $reason, $id)
 		getUserText($user),
 		getArticleText($article),
 		$reason);
-	push_hipchat_notify($message);
+	push_hipchat_notify($message, "red");
 	return true;
 }
 
@@ -143,7 +143,7 @@ function new_user_account($user, $byEmail)
 		getUserText($user),
 		$user->getEmail(),
 		$user->getRealName());
-	push_hipchat_notify($message);
+	push_hipchat_notify($message, "green");
 	return true;
 }
 
@@ -163,7 +163,7 @@ function file_uploaded($image)
 		$image->getLocalFile()->mime,
 		round($image->getLocalFile()->size / 1024 / 1024, 3),
                 $image->getLocalFile()->description);
-	push_hipchat_notify($message);
+	push_hipchat_notify($message, "green");
 	return true;
 }
 
@@ -181,7 +181,7 @@ function user_blocked(Block $block, $user)
 		$block->mReason == "" ? "" : "with reason '".$block->mReason."'.",
 		$block->mExpiry,
 		"<a href='".$wgWikiUrl.$wgWikiUrlEnding.$wgWikiUrlEndingBlockList."'>List of all blocks</a>.");
-	push_hipchat_notify($message);
+	push_hipchat_notify($message, "red");
 	return true;
 }
 
@@ -196,12 +196,13 @@ function writeDebug($message)
 /**
  * Sends the message into HipChat room.
  * @param message Message to be sent.
+ * @param color Background color for the message. One of "yellow", "red", "green", "purple", "gray", or "random". (default: yellow)
  * @see https://www.hipchat.com/docs/api/method/rooms/message
 */
-function push_hipchat_notify($message)
+function push_hipchat_notify($message, $bgColor)
 {
 	global $wgHipchatRoomMessageApiUrl, $wgHipchatToken, $wgHipchatFromName,
-		   $wgHipchatRoomID, $wgHipchatBackgroundColor, $wgHipchatNotification;
+		   $wgHipchatRoomID, $wgHipchatNotification;
 	
 	$url = sprintf(
 		"%s?auth_token=%s&from=%s&room_id=%s&color=%s&notify=%s&message_format=html&message=%s",
@@ -209,7 +210,7 @@ function push_hipchat_notify($message)
 		$wgHipchatToken,
 		$wgHipchatFromName,
 		$wgHipchatRoomID,
-		$wgHipchatBackgroundColor,
+		$bgColor,
 		$wgHipchatNotification == true ? "1" : "0",
 		urlencode($message));
 	

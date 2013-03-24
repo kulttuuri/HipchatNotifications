@@ -31,12 +31,8 @@ if (!isset($hpc_attached)) die();
 	
 	// OPTIONAL
 	
-	// Background color for message. One of "yellow", "red", "green", "purple", "gray", or "random". (default: yellow)
-	$wgHipchatBackgroundColor = "yellow";
 	// Whether or not this message should trigger a notification for people in the room (change the tab color, play a sound, etc). Each recipient's notification preferences are taken into account.
 	$wgHipchatNotification = false;
-	// Background color for message. One of "yellow", "red", "green", "purple", "gray", or "random". (default: yellow)
-	$wgHipchatBackgroundColor = "yellow";
 	// URL to HipChat rooms/message sent script. Mostly just leave to default value.
 	$wgHipchatRoomMessageApiUrl = "https://api.hipchat.com/v1/rooms/message";
 	

@@ -36,7 +36,7 @@ $wgExtensionCredits['other'][] = array(
 	'author' => 'Aleksi Postari',
 	'description' => 'Sends HipChat notifications for selected actions that have occurred in your MediaWiki sites.',
 	'url' => 'https://github.com/kulttuuri/hipchat_mediawiki',
-	"version" => "1.02"
+	"version" => "1.03"
 );
 
 /**
@@ -92,7 +92,7 @@ function article_saved(WikiPage $article, $user, $content, $summary, $isMinor, $
 	$message = sprintf(
 		"%s has %s article %s %s",
 		getUserText($user),
-                $isminor == true ? "made minor edit to" : "edited",
+                $isMinor == true ? "made minor edit to" : "edited",
                 getArticleText($article),
 		$summary == "" ? "" : "Summary: $summary");
 	push_hipchat_notify($message, "yellow");

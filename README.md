@@ -1,32 +1,27 @@
+# Hipchat MediaWiki
+
 This is a extension for MediaWiki that sends notifications into HipChat channel.
 
-###########
-# License #
-###########
+## License
 
-MIT (http://en.wikipedia.org/wiki/MIT_License)
+[MIT License](http://en.wikipedia.org/wiki/MIT_License)
 
-########################################################
-# Supported MediaWiki operations to send notifications #
-########################################################
+## Supported MediaWiki operations to send notifications
 
-- When article is added.
-- When article is removed.
-- When article is edited.
-- When new user is added.
-- When user is blocked.
+* When article is added.
+* When article is removed.
+* When article is edited.
+* When new user is added.
+* When user is blocked.
+* When file is uploaded.
 
-################
-# Requirements #
-################
+## Requirements
 
-- cURL
-- MediaWiki 1.8+ (only tested with as low as version 1.8)
-- Apache should have NE (NoEscape) flag on to prevent issues in URLs. By default this is enabled. Check this thread for more information: https://github.com/kulttuuri/hipchat_mediawiki/issues/8
+* [cURL](http://curl.haxx.se/)
+* [MediaWiki](https://www.mediawiki.org/wiki/MediaWiki) 1.8+ (only tested with as low as version 1.8)
+* Apache should have NE (NoEscape) flag on to prevent issues in URLs. By default this is enabled. Check this thread for more information: https://github.com/kulttuuri/hipchat_mediawiki/issues/8
 
-##################
-# How to install #
-##################
+## How to install
 
 1. Send folder HipchatNotifications into your mediawiki_installation/extensions folder.
 2. Add these settings in your localSettings.php (remember to set these settings or otherwise your extension won't work):
@@ -44,9 +39,7 @@ MIT (http://en.wikipedia.org/wiki/MIT_License)
 
 4. Enjoy the notifications in your HipChat room!
 	
-####################
-# Optional options #
-####################
+## Optional options
 
 // Hipchat options
 

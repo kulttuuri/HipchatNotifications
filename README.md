@@ -23,8 +23,9 @@ This is a extension for [MediaWiki](https://www.mediawiki.org/wiki/MediaWiki) th
 
 ## How to install
 
-1. Send folder HipchatNotifications into your `mediawiki_installation/extensions` folder.
-2. Add settings listed below in your `localSettings.php`. Note that it is mandatory to set these settings for this extension to work.
+1) Send folder HipchatNotifications into your `mediawiki_installation/extensions` folder.
+
+2) Add settings listed below in your `localSettings.php`. Note that it is mandatory to set these settings for this extension to work:
 
 	require_once("$IP/extensions/HipchatNotifications/hipchat_notifications.php");
 	// HipChat API token. Create or view your API keys here: https://hipchat.com/admin/api
@@ -38,7 +39,7 @@ This is a extension for [MediaWiki](https://www.mediawiki.org/wiki/MediaWiki) th
 	// Wiki script name. Leave this to default one if you do not have URL rewriting enabled.
 	$wgWikiUrlEnding = "index.php?title=";
 
-3. Enjoy the notifications in your HipChat room!
+3) Enjoy the notifications in your HipChat room!
 	
 ## Additional options
 
@@ -73,7 +74,7 @@ MediaWiki actions that will be sent notifications of into HipChat. Set desired o
 	
 ## Additional MediaWiki URL Settings
 
-Should any of these default MediaWiki system page URLs differ from default installation, set them here.
+Should any of these default MediaWiki system page URLs differ in your installation, change them here.
 
 	$wgWikiUrlEndingUserRights          = "Special%3AUserRights&user=";
 	$wgWikiUrlEndingBlockUser           = "Special:Block/";

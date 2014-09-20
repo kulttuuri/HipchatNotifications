@@ -1,6 +1,6 @@
 # Hipchat MediaWiki
 
-This is a extension for MediaWiki that sends notifications into HipChat channel.
+This is a extension for [MediaWiki](https://www.mediawiki.org/wiki/MediaWiki) that sends notifications into [HipChat](https://www.hipchat.com/) channel.
 
 ## License
 
@@ -18,13 +18,14 @@ This is a extension for MediaWiki that sends notifications into HipChat channel.
 ## Requirements
 
 * [cURL](http://curl.haxx.se/)
-* [MediaWiki](https://www.mediawiki.org/wiki/MediaWiki) 1.8+ (only tested with as low as version 1.8)
-* Apache should have NE (NoEscape) flag on to prevent issues in URLs. By default this is enabled. Check this thread for more information: https://github.com/kulttuuri/hipchat_mediawiki/issues/8
+* MediaWiki 1.8+ (only tested with as low as version 1.8)
+* Apache should have NE (NoEscape) flag on to prevent issues in URLs. By default this is enabled. Check [this](https://github.com/kulttuuri/hipchat_mediawiki/issues/8) thread for more information.
 
 ## How to install
 
-1. Send folder HipchatNotifications into your mediawiki_installation/extensions folder.
-2. Add these settings in your localSettings.php (remember to set these settings or otherwise your extension won't work):
+1. Send folder HipchatNotifications into your `mediawiki_installation/extensions` folder.
+2. Add settings listed below in your `localSettings.php`. Note that it is mandatory to set these settings for this extension to work.
+
 	require_once("$IP/extensions/HipchatNotifications/hipchat_notifications.php");
 	// HipChat API token. Create or view your API keys here: https://hipchat.com/admin/api
 	$wgHipchatToken = "";
@@ -37,19 +38,25 @@ This is a extension for MediaWiki that sends notifications into HipChat channel.
 	// Wiki script name. Leave this to default one if you do not have URL rewriting enabled.
 	$wgWikiUrlEnding = "index.php?title=";
 
-4. Enjoy the notifications in your HipChat room!
+3. Enjoy the notifications in your HipChat room!
 	
-## Optional options
+## Additional options
 
-// Hipchat options
+### Trigger notification
 
-	// Whether or not this message should trigger a notification for people in the room (change the tab color, play a sound, etc). Each recipient's notification preferences are taken into account.
+Whether or not this message should trigger a notification for people in the room (change the tab color, play a sound, etc). Each recipient's notification preferences are taken into account.
+
 	$wgHipchatNotification = true;
-	// URL to HipChat rooms/message sent script. Mostly just leave to default value.
+
+### API URL
+
+URL to HipChat rooms/message sent script. Mostly just leave to default value.
+
 	$wgHipchatRoomMessageApiUrl = "https://api.hipchat.com/v1/rooms/message";
 
-// MediaWiki actions that will be sent notifications of into HipChat.
-// Set desired options to false to disable notifications of those actions.
+### Actions to notify of
+
+MediaWiki actions that will be sent notifications of into HipChat. Set desired options to false to disable notifications of those actions.
 
 	// New user added into MediaWiki
 	$wgHipchatNotificationNewUser = true;
@@ -64,7 +71,9 @@ This is a extension for MediaWiki that sends notifications into HipChat channel.
 	// File uploaded
 	$wgHipchatNotificationFileUpload = true;
 	
-// Url endings
+## Additional MediaWiki URL Settings
+
+Should any of these default MediaWiki system page URLs differ from default installation, set them here.
 
 	$wgWikiUrlEndingUserRights          = "Special%3AUserRights&user=";
 	$wgWikiUrlEndingBlockUser           = "Special:Block/";

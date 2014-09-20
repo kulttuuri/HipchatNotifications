@@ -2,6 +2,8 @@
 
 This is a extension for [MediaWiki](https://www.mediawiki.org/wiki/MediaWiki) that sends notifications into [HipChat](https://www.hipchat.com/) channel.
 
+![Screenshot](http://i.imgur.com/cIINiBm.jpg)
+
 ## License
 
 [MIT License](http://en.wikipedia.org/wiki/MIT_License)

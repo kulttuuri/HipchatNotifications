@@ -7,8 +7,8 @@
  *
  * @ingroup Extensions
  * @link https://github.com/kulttuuri/hipchat_mediawiki
- * @author Aleksi Postari / kulttuuri <riialin@gmail.com>
- * @copyright Copyright © 2013, Aleksi Postari
+ * @author Aleksi Postari / kulttuuri <aleksi@postari.net>
+ * @copyright Copyright © 2015, Aleksi Postari
  * @license http://en.wikipedia.org/wiki/MIT_License MIT
  */
 
@@ -18,17 +18,19 @@ $hpc_attached = true;
 require_once("hipchat_default_config.php");
 
 if ($wgHipchatNotificationEditedArticle)
-	$wgHooks['ArticleSaveComplete'][] = array('article_saved');		// When article has been saved
+	$wgHooks['ArticleSaveComplete'][] = array('article_saved');				// When article has been saved
 if ($wgHipchatNotificationAddedArticle)
-	$wgHooks['ArticleInsertComplete'][] = array('article_inserted');	// When new article has been inserted
+	$wgHooks['ArticleInsertComplete'][] = array('article_inserted');		// When new article has been inserted
 if ($wgHipchatNotificationRemovedArticle)
-	$wgHooks['ArticleDeleteComplete'][] = array('article_deleted');		// When article has been removed
+	$wgHooks['ArticleDeleteComplete'][] = array('article_deleted');			// When article has been removed
+if ($wgHipchatNotificationMovedArticle)
+	$wgHooks['TitleMoveComplete'][] = array('article_moved');				// When article has been moved
 if ($wgHipchatNotificationNewUser)
-	$wgHooks['AddNewAccount'][] = array('new_user_account');		// When new user account is created
+	$wgHooks['AddNewAccount'][] = array('new_user_account');				// When new user account is created
 if ($wgHipchatNotificationBlockedUser)
-	$wgHooks['BlockIpComplete'][] = array('user_blocked');			// When user or IP has been blocked
+	$wgHooks['BlockIpComplete'][] = array('user_blocked');					// When user or IP has been blocked
 if ($wgHipchatNotificationFileUpload)
-	$wgHooks['UploadComplete'][] = array('file_uploaded');			// When file has been uploaded
+	$wgHooks['UploadComplete'][] = array('file_uploaded');					// When file has been uploaded
 
 $wgExtensionCredits['other'][] = array(
 	'path' => __FILE__,
@@ -36,7 +38,7 @@ $wgExtensionCredits['other'][] = array(
 	'author' => 'Aleksi Postari',
 	'description' => 'Sends HipChat notifications for selected actions that have occurred in your MediaWiki sites.',
 	'url' => 'https://github.com/kulttuuri/hipchat_mediawiki',
-	"version" => "1.03"
+	"version" => "1.04"
 );
 
 /**
@@ -81,13 +83,39 @@ function getArticleText(WikiPage $article)
 }
 
 /**
+ * Gets nice HTML text for title object containing the link to article page
+ * and also into edit, delete and article history pages.
+ */
+function getTitleText(Title $title)
+{
+        global $wgWikiUrl, $wgWikiUrlEnding, $wgWikiUrlEndingEditArticle,
+               $wgWikiUrlEndingDeleteArticle, $wgWikiUrlEndingHistory;
+
+        $titleName = $title->getFullText();
+        return sprintf(
+                "<b>%s</b> (%s | %s | %s)",
+                "<a href='".$wgWikiUrl.$wgWikiUrlEnding.$titleName."'>".$titleName."</a>",
+                "<a href='".$wgWikiUrl.$wgWikiUrlEnding.$titleName."&".$wgWikiUrlEndingEditArticle."'>edit</a>",
+                "<a href='".$wgWikiUrl.$wgWikiUrlEnding.$titleName."&".$wgWikiUrlEndingDeleteArticle."'>delete</a>",
+                "<a href='".$wgWikiUrl.$wgWikiUrlEnding.$titleName."&".$wgWikiUrlEndingHistory."'>history</a>"/*,
+                "move",
+                "protect",
+                "watch"*/
+                );
+}
+
+/**
  * Occurs after the save page request has been processed.
  * @see https://www.mediawiki.org/wiki/Manual:Hooks/PageContentSaveComplete
  */
 function article_saved(WikiPage $article, $user, $content, $summary, $isMinor, $isWatch, $section, $flags, $revision, $status, $baseRevId)
 {
-        // Skip new articles that have view count below 1 (this is already handled in article_added function)
-        if ($article->getCount() == null || $article->getCount() < 1) return true;
+    // Skip new articles that have view count below 1. Adding new articles is already handled in article_added function and
+	// calling it also here would trigger two notifications!
+	$isNew = $status->value['new']; // This is 1 if article is new
+	if ($isNew == 1) {
+		return true;
+	}
 	
 	$message = sprintf(
 		"%s has %s article %s %s",
@@ -133,6 +161,25 @@ function article_deleted(WikiPage $article, $user, $reason, $id)
 }
 
 /**
+ * Occurs after a page has been moved.
+ * @see https://www.mediawiki.org/wiki/Manual:Hooks/TitleMoveComplete
+ * @since HipchatNotifications 1.04
+ */
+function article_moved($title, $newtitle, $user, $oldid, $newid, $reason = null)
+{
+	error_log(print_r($title, true));
+	error_log(print_r($newtitle, true));
+	$message = sprintf(
+		"%s has moved article %s to %s. Reason: %s",
+		getUserText($user),
+		getTitleText($title),
+		getTitleText($newtitle),
+		$reason);
+	push_hipchat_notify($message, "green");
+	return true;
+}
+
+/**
  * Called after a user account is created.
  * @see http://www.mediawiki.org/wiki/Manual:Hooks/AddNewAccount
  */
@@ -153,16 +200,18 @@ function new_user_account($user, $byEmail)
  */
 function file_uploaded($image)
 {
-        global $wgWikiUrl, $wgWikiUrlEnding;
-        
+    global $wgWikiUrl, $wgWikiUrlEnding, $wgUser;
+    //error_log(print_r($image, true));
+    //error_log(print_r($image->getLocalFile(), true));
 	$message = sprintf(
 		"%s has uploaded file <a href=\"%s\">%s</a> (format: %s, size: %s MB, summary: %s)",
-		getUserText($image->getLocalFile()->user_text),
+		getUserText($wgUser->mName),
 		$wgWikiUrl . $wgWikiUrlEnding . $image->getLocalFile()->getTitle(),
 		$image->getLocalFile()->getTitle(),
-		$image->getLocalFile()->mime,
+		$image->getLocalFile()->getMimeType(),
 		round($image->getLocalFile()->size / 1024 / 1024, 3),
-                $image->getLocalFile()->description);
+            $image->getLocalFile()->getDescription());
+
 	push_hipchat_notify($message, "green");
 	return true;
 }
@@ -201,6 +250,7 @@ function writeDebug($message)
 */
 function push_hipchat_notify($message, $bgColor)
 {
+	wfErrorLog($message + "\n", "hipchatdebug.txt");
 	global $wgHipchatRoomMessageApiUrl, $wgHipchatToken, $wgHipchatFromName,
 		   $wgHipchatRoomID, $wgHipchatNotification;
 	

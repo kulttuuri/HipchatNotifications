@@ -7,8 +7,8 @@
  *
  * @ingroup Extensions
  * @link https://github.com/kulttuuri/hipchat_mediawiki
- * @author Aleksi Postari / kulttuuri <riialin@gmail.com>
- * @copyright Copyright © 2013, Aleksi Postari
+ * @author Aleksi Postari / kulttuuri <aleksi@postari.net>
+ * @copyright Copyright © 2015, Aleksi Postari
  * @license http://en.wikipedia.org/wiki/MIT_License MIT
  */
 
@@ -74,6 +74,8 @@ if (!isset($hpc_attached)) die();
 	$wgHipchatNotificationAddedArticle = true;
 	// Article removed from MediaWiki
 	$wgHipchatNotificationRemovedArticle = true;
+	// Article moved under another title
+	$wgHipchatNotificationMovedArticle = true;
 	// Article edited in MediaWiki
 	$wgHipchatNotificationEditedArticle = true;
 	// File uploaded

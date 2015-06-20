@@ -1,6 +1,6 @@
 # Hipchat MediaWiki
 
-This is a extension for [MediaWiki](https://www.mediawiki.org/wiki/MediaWiki) that sends notifications into [HipChat](https://www.hipchat.com/) channel.
+This is a extension for [MediaWiki](https://www.mediawiki.org/wiki/MediaWiki) that sends notifications of actions in your Wiki like editing, adding or removing a page into [HipChat](https://www.hipchat.com/) channel.
 
 ![Screenshot](http://i.imgur.com/cIINiBm.jpg)
 
@@ -12,6 +12,7 @@ This is a extension for [MediaWiki](https://www.mediawiki.org/wiki/MediaWiki) th
 
 * When article is added.
 * When article is removed.
+* When article is moved.
 * When article is edited.
 * When new user is added.
 * When user is blocked.
@@ -21,7 +22,7 @@ This is a extension for [MediaWiki](https://www.mediawiki.org/wiki/MediaWiki) th
 
 * [cURL](http://curl.haxx.se/)
 * MediaWiki 1.8+ (only tested with as low as version 1.8)
-* Apache should have NE (NoEscape) flag on to prevent issues in URLs. By default this is enabled. Check [this](https://github.com/kulttuuri/hipchat_mediawiki/issues/8) thread for more information.
+* Apache should have NE (NoEscape) flag on to prevent issues in URLs. By default you should have this enabled. Check [this](https://github.com/kulttuuri/hipchat_mediawiki/issues/8) thread for more information if you run into this issue.
 
 ## How to install
 
@@ -69,6 +70,8 @@ MediaWiki actions that will be sent notifications of into HipChat. Set desired o
 	$wgHipchatNotificationAddedArticle = true;
 	// Article removed from MediaWiki
 	$wgHipchatNotificationRemovedArticle = true;
+	// Article moved under new title in MediaWiki
+	$wgHipchatNotificationMovedArticle = true;
 	// Article edited in MediaWiki
 	$wgHipchatNotificationEditedArticle = true;
 	// File uploaded

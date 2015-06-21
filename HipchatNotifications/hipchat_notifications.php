@@ -167,8 +167,6 @@ function article_deleted(WikiPage $article, $user, $reason, $id)
  */
 function article_moved($title, $newtitle, $user, $oldid, $newid, $reason = null)
 {
-	error_log(print_r($title, true));
-	error_log(print_r($newtitle, true));
 	$message = sprintf(
 		"%s has moved article %s to %s. Reason: %s",
 		getUserText($user),
@@ -201,8 +199,6 @@ function new_user_account($user, $byEmail)
 function file_uploaded($image)
 {
     global $wgWikiUrl, $wgWikiUrlEnding, $wgUser;
-    //error_log(print_r($image, true));
-    //error_log(print_r($image->getLocalFile(), true));
 	$message = sprintf(
 		"%s has uploaded file <a href=\"%s\">%s</a> (format: %s, size: %s MB, summary: %s)",
 		getUserText($wgUser->mName),

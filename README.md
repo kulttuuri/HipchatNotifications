@@ -4,10 +4,6 @@ This is a extension for [MediaWiki](https://www.mediawiki.org/wiki/MediaWiki) th
 
 ![Screenshot](http://i.imgur.com/cIINiBm.jpg)
 
-## License
-
-[MIT License](http://en.wikipedia.org/wiki/MIT_License)
-
 ## Supported MediaWiki operations to send notifications
 
 * When article is added.
@@ -104,3 +100,7 @@ $wgWikiUrlEndingEditArticle         = "action=edit";
 $wgWikiUrlEndingDeleteArticle       = "action=delete";
 $wgWikiUrlEndingHistory             = "action=history";
 ```
+
+## License
+
+[MIT License](http://en.wikipedia.org/wiki/MIT_License)

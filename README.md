@@ -20,7 +20,7 @@ This is a extension for [MediaWiki](https://www.mediawiki.org/wiki/MediaWiki) th
 
 ## Requirements
 
-* [cURL](http://curl.haxx.se/)
+* [cURL](http://curl.haxx.se/). As of version 1.04 this extension also supports using file_get_contents for sending the data. See the configuration parameter $wgHipchatSendMethod below to change this.
 * MediaWiki 1.8+ (only tested with as low as version 1.8)
 * Apache should have NE (NoEscape) flag on to prevent issues in URLs. By default you should have this enabled. Check [this](https://github.com/kulttuuri/hipchat_mediawiki/issues/8) thread for more information if you run into this issue.
 
@@ -41,6 +41,8 @@ This is a extension for [MediaWiki](https://www.mediawiki.org/wiki/MediaWiki) th
 	$wgWikiUrl		= "http://your_wiki_url/";
 	// Wiki script name. Leave this to default one if you do not have URL rewriting enabled.
 	$wgWikiUrlEnding = "index.php?title=";
+	// What method will be used to send the data to HipChat server. By default this is "curl" which only works if you have the curl extension enabled. This can be: "curl" or "file_get_contents". Default: "curl".
+	$wgHipchatSendMethod = "curl";
 
 3) Enjoy the notifications in your HipChat room!
 	

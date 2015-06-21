@@ -35,6 +35,8 @@ if (!isset($hpc_attached)) die();
 	$wgHipchatNotification = false;
 	// URL to HipChat rooms/message sent script. Mostly just leave to default value.
 	$wgHipchatRoomMessageApiUrl = "https://api.hipchat.com/v1/rooms/message";
+	// What method will be used to send the data to HipChat server. By default this is "curl" which only works if you have the curl extension enabled. This can be: "curl" or "file_get_contents". Default: "curl".
+	$wgHipchatSendMethod = "curl";
 	
 ##################
 # MEDIAWIKI URLS #

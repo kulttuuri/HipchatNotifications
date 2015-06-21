@@ -250,9 +250,8 @@ function writeDebug($message)
 */
 function push_hipchat_notify($message, $bgColor)
 {
-	wfErrorLog($message + "\n", "hipchatdebug.txt");
 	global $wgHipchatRoomMessageApiUrl, $wgHipchatToken, $wgHipchatFromName,
-		   $wgHipchatRoomID, $wgHipchatNotification;
+		   $wgHipchatRoomID, $wgHipchatNotification, $wgHipchatSendMethod;
 	
 	$url = sprintf(
 		"%s?auth_token=%s&from=%s&room_id=%s&color=%s&notify=%s&message_format=html&message=%s",
@@ -264,15 +263,21 @@ function push_hipchat_notify($message, $bgColor)
 		$wgHipchatNotification == true ? "1" : "0",
 		urlencode($message));
 	
-	// Call the HipChat API through curl
-	$h = curl_init();
-	curl_setopt($h, CURLOPT_URL, $url);
-	curl_setopt($h, CURLOPT_RETURNTRANSFER, true);
-        // I know this shouldn't be done, but because it wouldn't otherwise work because of SSL...
-        curl_setopt ($h, CURLOPT_SSL_VERIFYHOST, 0);
-        curl_setopt ($h, CURLOPT_SSL_VERIFYPEER, 0);
-        // ... Aaand execute the curl script!
-	curl_exec($h);
-	curl_close($h);
+	// Use file_get_contents to send the data. Note that you will need to have allow_url_fopen enabled in php.ini for this to work.
+	if ($wgHipchatSendMethod == "file_get_contents") {
+		$result = file_get_contents($url, false);
+	}
+	// Call the HipChat API through cURL (default way). Note that you will need to have cURL enabled for this to work.
+	else {
+		$h = curl_init();
+		curl_setopt($h, CURLOPT_URL, $url);
+		curl_setopt($h, CURLOPT_RETURNTRANSFER, true);
+	        // I know this shouldn't be done, but because it wouldn't otherwise work because of SSL...
+	        curl_setopt ($h, CURLOPT_SSL_VERIFYHOST, 0);
+	        curl_setopt ($h, CURLOPT_SSL_VERIFYPEER, 0);
+	        // ... Aaand execute the curl script!
+		curl_exec($h);
+		curl_close($h);
+	}
 }
 ?>

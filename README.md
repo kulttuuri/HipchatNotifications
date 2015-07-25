@@ -34,7 +34,7 @@ Note that as of version 1.05 we use Hipchat API v2 by default. To switch to old 
 require_once("$IP/extensions/HipchatNotifications/hipchat_notifications.php");
 // HipChat API token. Manage API keys for Hipchat API v2 here: https://hipchat.com/account/api
 $wgHipchatToken = "";
-// HipChat room ID or name where you want all the notifications to go into. You can directly use your room name or if that does not work, you can find your room ID from here: https://api.hipchat.com/v2/room?auth_token=YOUR_AUTH_TOKENyour own API key): https://api.hipchat.com/v1/rooms/list?format=xml&auth_token=YOUR_AUTH_TOKEN
+// HipChat room ID or name where you want all the notifications to go into. You can directly use your room name or if that does not work, you can find your room ID from here: https://api.hipchat.com/v2/room?auth_token=YOUR_AUTH_TOKEN
 $wgHipchatRoomID = "";
 // Required. Name the message will appear be sent from. Must be less than 15 characters long. May contain letters, numbers, -, _, and spaces.
 $wgHipchatFromName = "Wiki";

@@ -19,13 +19,17 @@ if (!isset($hpc_attached)) die();
 # HIPCHAT API PARAMETERS #
 ##########################
 // Basic HipChat configurations.
+// Note that by default we use Hipchat API v2.
+// To use old API v1, change $wgHipchatRoomMessageApiUrl to old Hipchat api V1 url: https://api.hipchat.com/v1/rooms/message
+	// You can manage API keys for old API v1 here: https://hipchat.com/admin/api
+	// You can list rooms and get room ID for old API v1 here: https://api.hipchat.com/v1/rooms/list?format=xml&auth_token=YOUR_AUTH_TOKEN
 	
 	// MANDATORY
 	
-	// HipChat API token. Create or view your API keys here: https://hipchat.com/admin/api
+	// HipChat API token. Manage API keys for Hipchat API v2 here: https://hipchat.com/account/api
 	$wgHipchatToken = "";
-	// HipChat room ID where you want all the notifications to go into. You can get the room ID by visiting (replace YOUR_AUTH_TOKEN in the end with your own API key): https://api.hipchat.com/v1/rooms/list?format=xml&auth_token=YOUR_AUTH_TOKEN
-	$wgHipchatRoomID = 0;
+	// HipChat room ID or name where you want all the notifications to go into. You can directly use your room name or if that does not work, you can find your room ID from here: https://api.hipchat.com/v2/room?auth_token=YOUR_AUTH_TOKEN
+	$wgHipchatRoomID = "0";
 	// Required. Name the message will appear be sent from. Must be less than 15 characters long. May contain letters, numbers, -, _, and spaces.
 	$wgHipchatFromName = "Wiki";
 	
@@ -33,9 +37,12 @@ if (!isset($hpc_attached)) die();
 	
 	// Whether or not this message should trigger a notification for people in the room (change the tab color, play a sound, etc). Each recipient's notification preferences are taken into account.
 	$wgHipchatNotification = false;
-	// URL to HipChat rooms/message sent script. Mostly just leave to default value.
-	$wgHipchatRoomMessageApiUrl = "https://api.hipchat.com/v1/rooms/message";
-	// What method will be used to send the data to HipChat server. By default this is "curl" which only works if you have the curl extension enabled. This can be: "curl" or "file_get_contents". Default: "curl".
+	// URL to HipChat rooms/message notification script. Defaults to Hipchat API v2.
+	// For Hipchat API v2 use (default): https://api.hipchat.com/v2/room
+	// For Hipchat API v1 use: https://api.hipchat.com/v1/rooms/message
+	$wgHipchatRoomMessageApiUrl = "https://api.hipchat.com/v2/room";
+	// What method will be used to send the data to HipChat server. This setting only works with Hipchat API v1, in V2 we always use curl.
+	// By default this is "curl" which only works if you have the curl extension enabled. This can be: "curl" or "file_get_contents". Default: "curl".
 	$wgHipchatSendMethod = "curl";
 	
 ##################

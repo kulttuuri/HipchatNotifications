@@ -18,9 +18,9 @@ This is a extension for [MediaWiki](https://www.mediawiki.org/wiki/MediaWiki) th
 
 ## Requirements
 
-* [cURL](http://curl.haxx.se/). As of version 1.04 this extension also supports using file_get_contents for sending the data. See the configuration parameter $wgHipchatSendMethod below to change this.
+* [cURL](http://curl.haxx.se/). As of version 1.04 this extension also supports using file_get_contents for sending the data (but only with Hipchat API v1). See the configuration parameter $wgHipchatSendMethod below to change this.
 * MediaWiki 1.8+ (tested with version 1.8, also tested and works with 1.25+)
-* Apache should have NE (NoEscape) flag on to prevent issues in URLs. By default you should have this enabled. Check [this](https://github.com/kulttuuri/hipchat_mediawiki/issues/8) thread for more information if you run into this issue.
+* Apache should have NE (NoEscape) flag on to prevent issues in URLs. By default you should have this enabled so usually no configuration is required from your part. Check [this](https://github.com/kulttuuri/hipchat_mediawiki/issues/8) thread for more information if you run into this issue.
 
 ## How to install
 
@@ -30,17 +30,18 @@ This is a extension for [MediaWiki](https://www.mediawiki.org/wiki/MediaWiki) th
 
 ```php
 require_once("$IP/extensions/HipchatNotifications/hipchat_notifications.php");
-// HipChat API token. Create or view your API keys here: https://hipchat.com/admin/api
+// HipChat API token. Manage API keys for Hipchat API v2 here: https://hipchat.com/account/api
 $wgHipchatToken = "";
-// HipChat room ID where you want all the notifications to go into. You can get the room ID by visiting (replace YOUR_AUTH_TOKEN in the end with your own API key): https://api.hipchat.com/v1/rooms/list?format=xml&auth_token=YOUR_AUTH_TOKEN
-$wgHipchatRoomID = ;
+// HipChat room ID or name where you want all the notifications to go into. You can directly use your room name or if that does not work, you can find your room ID from here: https://api.hipchat.com/v2/room?auth_token=YOUR_AUTH_TOKENyour own API key): https://api.hipchat.com/v1/rooms/list?format=xml&auth_token=YOUR_AUTH_TOKEN
+$wgHipchatRoomID = "";
 // Required. Name the message will appear be sent from. Must be less than 15 characters long. May contain letters, numbers, -, _, and spaces.
 $wgHipchatFromName = "Wiki";
 // URL into your MediaWiki installation with the trailing /.
 $wgWikiUrl		= "http://your_wiki_url/";
 // Wiki script name. Leave this to default one if you do not have URL rewriting enabled.
 $wgWikiUrlEnding = "index.php?title=";
-// What method will be used to send the data to HipChat server. By default this is "curl" which only works if you have the curl extension enabled. This can be: "curl" or "file_get_contents". Default: "curl".
+// What method will be used to send the data to HipChat server. This setting only works with Hipchat API v1, in V2 we always use curl.
+// By default this is "curl" which only works if you have the curl extension enabled. This can be: "curl" or "file_get_contents". Default: "curl".
 $wgHipchatSendMethod = "curl";
 ```
 
@@ -58,12 +59,12 @@ Whether or not this message should trigger a notification for people in the room
 $wgHipchatNotification = true;
 ```
 
-### API URL
+### API URL (Switch between Hipchat API v2 or v1)
 
-URL to HipChat rooms/message sent script. Mostly just leave to default value.
+URL to HipChat rooms/message sent script. By default we use Hipchat API v2. To use the old Hipchat API v1, change this url to: https://api.hipchat.com/v1/rooms/message
 
 ```php
-$wgHipchatRoomMessageApiUrl = "https://api.hipchat.com/v1/rooms/message";
+$wgHipchatRoomMessageApiUrl = "https://api.hipchat.com/v2/room";
 ```
 
 ### Actions to notify of

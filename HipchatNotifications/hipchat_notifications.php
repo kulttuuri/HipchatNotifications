@@ -249,18 +249,37 @@ function push_hipchat_notify($message, $bgColor)
 	global $wgHipchatRoomMessageApiUrl, $wgHipchatToken, $wgHipchatFromName,
 		   $wgHipchatRoomID, $wgHipchatNotification, $wgHipchatSendMethod;
 	
-	$url = sprintf(
-		"%s?auth_token=%s&from=%s&room_id=%s&color=%s&notify=%s&message_format=html&message=%s",
-		$wgHipchatRoomMessageApiUrl,
-		$wgHipchatToken,
-		$wgHipchatFromName,
-		$wgHipchatRoomID,
-		$bgColor,
-		$wgHipchatNotification == true ? "1" : "0",
-		urlencode($message));
+	// Determine Hipchat API version from setting
+	$apiVersion = $wgHipchatRoomMessageApiUrl == "https://api.hipchat.com/v1/rooms/message" ? 1 : 2;
+
+	// API v1
+	if ($apiVersion == 1) {
+		$url = sprintf(
+			"%s?auth_token=%s&from=%s&room_id=%s&color=%s&notify=%s&message_format=html&message=%s",
+			$wgHipchatRoomMessageApiUrl,
+			$wgHipchatToken,
+			$wgHipchatFromName,
+			$wgHipchatRoomID,
+			$bgColor,
+			$wgHipchatNotification == true ? "1" : "0",
+			urlencode($message));
+	}
+	// API v2
+	else {
+		$url = sprintf(
+			"%s/%s/notification?auth_token=%s",
+			$wgHipchatRoomMessageApiUrl,
+			$wgHipchatRoomID,
+			$wgHipchatToken);
+		$post = sprintf("from=%s&color=%s&notify=%s&message_format=html&message=%s",
+			$wgHipchatFromName,
+			$bgColor,
+			$wgHipchatNotification == true ? "true" : "false",
+			urlencode($message));
+	}
 	
-	// Use file_get_contents to send the data. Note that you will need to have allow_url_fopen enabled in php.ini for this to work.
-	if ($wgHipchatSendMethod == "file_get_contents") {
+	// Use file_get_contents to send the data. Note that this only works with Hipchat API v1 and you will need to have allow_url_fopen enabled in php.ini for this to work.
+	if ($wgHipchatSendMethod == "file_get_contents" && $apiVersion == 1) {
 		$result = file_get_contents($url, false);
 	}
 	// Call the HipChat API through cURL (default way). Note that you will need to have cURL enabled for this to work.
@@ -268,10 +287,14 @@ function push_hipchat_notify($message, $bgColor)
 		$h = curl_init();
 		curl_setopt($h, CURLOPT_URL, $url);
 		curl_setopt($h, CURLOPT_RETURNTRANSFER, true);
-	        // I know this shouldn't be done, but because it wouldn't otherwise work because of SSL...
-	        curl_setopt ($h, CURLOPT_SSL_VERIFYHOST, 0);
-	        curl_setopt ($h, CURLOPT_SSL_VERIFYPEER, 0);
-	        // ... Aaand execute the curl script!
+		if ($apiVersion == 2) {
+			curl_setopt($h, CURLOPT_HTTPHEADER, array('Content-type: application/x-www-form-urlencoded'));
+			curl_setopt($h, CURLOPT_POSTFIELDS, $post);
+		}
+        // I know this shouldn't be done, but because it wouldn't otherwise work because of SSL...
+        curl_setopt ($h, CURLOPT_SSL_VERIFYHOST, 0);
+        curl_setopt ($h, CURLOPT_SSL_VERIFYPEER, 0);
+	    // ... Aaand execute the curl script!
 		curl_exec($h);
 		curl_close($h);
 	}

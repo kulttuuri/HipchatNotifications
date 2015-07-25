@@ -24,6 +24,8 @@ This is a extension for [MediaWiki](https://www.mediawiki.org/wiki/MediaWiki) th
 
 ## How to install
 
+Note that as of version 1.05 we use Hipchat API v2 by default. To switch to old v1, check section "API URL (Switch between Hipchat API v2 or v1)".
+
 1) Send folder HipchatNotifications into your `mediawiki_installation/extensions` folder.
 
 2) Add settings listed below in your `localSettings.php`. Note that it is mandatory to set these settings for this extension to work:

@@ -38,7 +38,7 @@ $wgExtensionCredits['other'][] = array(
 	'author' => 'Aleksi Postari',
 	'description' => 'Sends HipChat notifications for selected actions that have occurred in your MediaWiki sites.',
 	'url' => 'https://github.com/kulttuuri/hipchat_mediawiki',
-	"version" => "1.04"
+	"version" => "1.05"
 );
 
 /**

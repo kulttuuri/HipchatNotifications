@@ -8,14 +8,14 @@
  * @ingroup Extensions
  * @link https://github.com/kulttuuri/hipchat_mediawiki
  * @author Aleksi Postari / kulttuuri <aleksi@postari.net>
- * @copyright Copyright © 2015, Aleksi Postari
+ * @copyright Copyright © 2016, Aleksi Postari
  * @license http://en.wikipedia.org/wiki/MIT_License MIT
  */
 
 if (!defined('MEDIAWIKI')) die();
 
 $hpc_attached = true;
-require_once("hipchat_default_config.php");
+require_once("HipchatNotificationsDefaultConfig.php");
 
 if ($wgHipchatNotificationEditedArticle)
 	$wgHooks['ArticleSaveComplete'][] = array('article_saved');				// When article has been saved
@@ -38,7 +38,7 @@ $wgExtensionCredits['other'][] = array(
 	'author' => 'Aleksi Postari',
 	'description' => 'Sends HipChat notifications for selected actions that have occurred in your MediaWiki sites.',
 	'url' => 'https://github.com/kulttuuri/hipchat_mediawiki',
-	"version" => "1.05"
+	"version" => "1.06"
 );
 
 /**

@@ -31,7 +31,7 @@ Note that as of version 1.05 we use Hipchat API v2 by default. To switch to old 
 2) Add settings listed below in your `localSettings.php`. Note that it is mandatory to set these settings for this extension to work:
 
 ```php
-require_once("$IP/extensions/HipchatNotifications/hipchat_notifications.php");
+require_once("$IP/extensions/HipchatNotifications/HipchatNotifications.php");
 // HipChat API token. You should use API key with scope "Send Notification". Manage API keys for Hipchat API v2 here: https://hipchat.com/account/api
 $wgHipchatToken = "";
 // HipChat room ID or name where you want all the notifications to go into. You can directly use your room name or if that does not work, you can find your room ID from here: https://api.hipchat.com/v2/room?auth_token=YOUR_AUTH_TOKEN
